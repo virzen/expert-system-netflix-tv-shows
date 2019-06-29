@@ -34,9 +34,7 @@
 ;;;****************
 
 (defrule system-banner ""
-
   =>
-  
   (assert (UI-state (display WelcomeMessage)
                     (relation-asserted start)
                     (state initial)
@@ -46,277 +44,360 @@
 ;;;* QUERY RULES *
 ;;;***************
 
+
+
 (defrule determine-genre ""
-
    (logical (start))
-
    =>
-
    (assert (UI-state (display StartQuestion)
                      (relation-asserted genre-is)
                      (response SciFi)
                      (valid-answers SciFi Fantasy Horror Slipstream))))
 
+;;; SciFi
 (defrule likes-sci-fi-anthologies ""
-
    (logical (genre-is SciFi))
-
    =>
-
    (assert (UI-state (display AnthologiesQuestion)
                      (relation-asserted likes-sci-fi-anthologies)
                      (response No)
                      (valid-answers Yes No))))
                      
 (defrule doesnt-like-sci-fi-anthologies ""
-
    (logical (likes-sci-fi-anthologies No))
-
    =>
-
    (assert (UI-state (display SpaceOperaQuestion)
                      (relation-asserted space-opera-or-home)
                      (response Home)
                      (valid-answers Stars Home))))
                      
 (defrule wants-home ""
-
    (logical (space-opera-or-home Home))
-
    =>
-
    (assert (UI-state (display InvadersQuestion)
                      (relation-asserted friendlies-or-invaders)
                      (response Friends)
                      (valid-answers Friends Invaders))))
-                     
 
+(defrule wants-invaders ""
+  (logical (friendlies-or-invaders Invaders))
+  =>
+  (assert (UI-state (display AnimatedLiveActionQuestion)
+  (relation-asserted animated-or-live-action)
+  (response Live)
+  (valid-answers Live Toons))))
 
-(defrule determine-rotation-state ""
+(defrule wants-into-stars ""
+  (logical (space-opera-or-home Stars))
+  =>
+  (assert (UI-state (display ComedyQuestion)
+  (relation-asserted comedy)
+  (response Yes)
+  (valid-answers Yes No))))
 
-   (logical (engine-starts No))
+(defrule wants-comedy ""
+  (logical (comedy Yes))
+  =>
+  (assert (UI-state (display BritishAmericanQuestion)
+  (relation-asserted british-or-american-comedy)
+  (response UK)
+  (valid-answers UK USA))))
 
-   =>
+(defrule doesnt-want-comedy ""
+  (logical (comedy No))
+  =>
+  (assert (UI-state (display TrekkieQuestion)
+  (relation-asserted trekkie-comedy)
+  (response YepSeenAll)
+  (valid-answers YepSeenAll Yes No))))
 
-   (assert (UI-state (display RotateQuestion)
-                     (relation-asserted engine-rotates)
-                     (response No)
-                     (valid-answers No Yes))))
-   
-(defrule determine-sluggishness ""
+(defrule wants-trekkie-comedy ""
+  (logical (trekkie-comedy Yes))
+  =>
+  (assert (UI-state (display WillWheatonQuestion)
+  (relation-asserted will-wheaton)
+  (response Woot)
+  (valid-answers Woot NOOOO))))
 
-   (logical (runs-normally No))
+(defrule doesnt-want-will-wheaton ""
+  (logical (will-wheaton NOOOO))
+  =>
+  (assert (UI-state (display WhatStudyQuestion)
+  (relation-asserted what-do-you-study)
+  (response PoliSci)
+  (valid-answers PoliSci WomensLib Sociology History))))
 
-   =>
+(defrule doesnt-want-trekkie-comedy ""
+  (logical (trekkie-comedy No))
+  =>
+  (assert (UI-state (display WesternsQuestion)
+  (relation-asserted likes-westerns)
+  (response Yes)
+  (valid-answers Yes No))))
 
-   (assert (UI-state (display SluggishQuestion)
-                     (relation-asserted engine-sluggish)
-                     (response No)
-                     (valid-answers No Yes))))
-   
-(defrule determine-misfiring ""
+(defrule doesnt-like-westerns ""
+  (logical (likes-westerns No))
+  =>
+  (assert (UI-state (display GatewaysQuestion)
+  (relation-asserted time-space-gateways)
+  (response Yes)
+  (valid-answers Yes No))))
 
-   (logical (runs-normally No))
+(defrule doesnt-want-gateways ""
+  (logical (time-space-gateways No))
+  =>
+  (assert (UI-state (display ClassicModernQuestion)
+  (relation-asserted classic-or-modern)
+  (response Modern)
+  (valid-answers Classic Modern))))
 
-   =>
+(defrule wants-gateways ""
+  (logical (time-space-gateways Yes))
+  =>
+  (assert (UI-state (display BritishAmericanQuestion)
+  (relation-asserted british-or-american-gateways)
+  (response USA)
+  (valid-answers USA UK))))
 
-   (assert (UI-state (display MisfireQuestion)
-                     (relation-asserted engine-misfires)
-                     (response No)
-                     (valid-answers No Yes))))
+;;; Horror
+(defrule want-horror ""
+  (logical (genre-is Horror))
+  =>
+  (assert (UI-state (display VampiresZombiesQuestion)
+  (relation-asserted vampires-zombies)
+  (response Zombies)
+  (valid-answers Zombies Vampires Neither))))
 
-(defrule determine-knocking ""
+(defrule wants-neither-zombies-nor-vampires ""
+  (logical (vampires-zombies Neither))
+  =>
+  (assert (UI-state (display AnthologiesQuestion)
+  (relation-asserted likes-horror-anthologies)
+  (response No)
+  (valid-answers Yes No))))
 
-   (logical (runs-normally No))
+(defrule likes-horror-anthologies ""
+  (logical (likes-horror-anthologies Yes))
+  =>
+  (assert (UI-state (display PsychologicalGoryQuestion)
+  (relation-asserted psychological-gory)
+  (response Psycho)
+  (valid-answers Psycho Gory))))
 
-   =>
+(defrule wants-vampires ""
+  (logical (vampires-zombies Vampires))
+  =>
+  (assert (UI-state (display HowOldQuestion)
+  (relation-asserted is-this-old)
+  (response LessThan16)
+  (valid-answers LessThan16 MoreThan16))))
 
-   (assert (UI-state (display KnockQuestion)
-                     (relation-asserted engine-knocks)
-                     (response No)
-                     (valid-answers No Yes))))
+(defrule is-more-than-16-years-old ""
+  (logical (is-this-old MoreThan16))
+  =>
+  (assert (UI-state (display NSFWQuestion)
+  (relation-asserted sfw-nsfw)
+  (response SFW)
+  (valid-answers SFW NSFW))))
 
-(defrule determine-low-output ""
+(defrule wants-sfw ""
+  (logical (sfw-nsfw SFW))
+  =>
+  (assert (UI-state (display SeenBuffyQuestion)
+  (relation-asserted seen-buffy)
+  (response No)
+  (valid-answers Yes No))))
 
-   (logical (runs-normally No))
-
-   =>
-
-   (assert (UI-state (display OutputQuestion)
-                     (relation-asserted engine-output-low)
-                     (response No)
-                     (valid-answers No Yes))))
-
-(defrule determine-gas-level ""
-
-   (logical (engine-starts No)
-
-            (engine-rotates Yes))
-
-   =>
-
-   (assert (UI-state (display GasQuestion)
-                     (relation-asserted tank-has-gas)
-                     (response No)
-                     (valid-answers No Yes))))
-
-(defrule determine-battery-state ""
-  
-   (logical (engine-rotates No))
-
-   =>
-   
-   (assert (UI-state (display BatteryQuestion)
-                     (relation-asserted battery-has-charge)
-                     (response No)
-                     (valid-answers No Yes))))
-
-(defrule determine-point-surface-state ""
-
-   (or (logical (engine-starts No)  
-   
-                (engine-rotates Yes))
-                     
-       (logical (engine-output-low Yes)))
-
-   =>
-
-   (assert (UI-state (display PointsQuestion)
-                     (relation-asserted point-surface-state)
-                     (response Normal)
-                     (valid-answers Normal Burned Contaminated))))
-
-(defrule determine-conductivity-test ""
-   
-   (logical (engine-starts No)  
-   
-            (engine-rotates No)
-            
-            (battery-has-charge Yes))
-
-   =>
-
-   (assert (UI-state (display CoilQuestion)
-                     (relation-asserted conductivity-test-positive)
-                     (response No)
-                     (valid-answers No Yes))))
+(defrule wants-nsfw ""
+  (logical (sfw-nsfw NSFW))
+  =>
+  (assert (UI-state (display BritishAmericanQuestion)
+  (relation-asserted british-or-american-nsfw-horror)
+  (response UK)
+  (valid-answers UK USA))))
 
 ;;;****************
-;;;* REPAIR RULES *
+;;;* MOVIE SUGGESTION RULES *
 ;;;****************
 
 (defrule likes-sci-fi-anthologies-conclusions ""
-
    (logical (likes-sci-fi-anthologies Yes))
-   
    =>
-
    (assert (UI-state (display OuterLimitsMovie)
                      (state final))))
 
-(defrule normal-engine-state-conclusions ""
-
-   (logical (runs-normally Yes))
-   
-   =>
-
-   (assert (UI-state (display NoRepair)
+(defrule friendlies-conclusions ""
+  (logical (friendlies-or-invaders Friends))
+  =>
+   (assert (UI-state (display AlienNationMovie)
                      (state final))))
 
-(defrule engine-sluggish ""
+(defrule live-conclusions ""
+  (logical (animated-or-live-action Live))
+  =>
+  (assert (UI-state (display VMovie)
+  (state final))))
 
-   (logical (engine-sluggish Yes))
-   
-   =>
+(defrule toons-conclusions ""
+  (logical (animated-or-live-action Toons))
+  =>
+  (assert (UI-state (display InvaderZimMovie)
+  (state final))))
 
-   (assert (UI-state (display FuelLineRepair)
-                     (state final))))
+(defrule british-comedy-conclusions ""
+  (logical (british-or-american-comedy UK))
+  =>
+  (assert (UI-state (display RedDwarfMovie)
+  (state final))))
 
-(defrule engine-misfires ""
+(defrule american-comedy-conclusions ""
+  (logical (british-or-american-comedy USA))
+  =>
+  (assert (UI-state (display FuturamaMovie)
+  (state final))))
 
-   (logical (engine-misfires Yes))
+(defrule seen-all-trekkie-comedies-conclusions ""
+  (logical (trekkie-comedy YepSeenAll))
+  =>
+  (assert (UI-state (display EarthFinalConflictMovie)
+  (state final))))
 
-   =>
+(defrule will-wheaton-woot-conclusions ""
+  (logical (will-wheaton Woot))
+  =>
+  (assert (UI-state (display TheNextGenerationMovie)
+  (state final))))
 
-   (assert (UI-state (display PointGapRepair)
-                     (state final))))
+(defrule studies-poli-sci-conclusions ""
+  (logical (what-do-you-study PoliSci))
+  =>
+  (assert (UI-state (display StarTrekDeepSpaceMineMovie)
+  (state final))))
 
-(defrule engine-knocks ""
+(defrule studies-womens-lib-conclusions ""
+  (logical (what-do-you-study WomensLib))
+  =>
+  (assert (UI-state (display StarTrekVoyagerMovie)
+  (state final))))
+(defrule studies-sociology-conclusions ""
+  (logical (what-do-you-study Sociology))
+  =>
+  (assert (UI-state (display StarTrekTheOriginalSeriesMovie)
+  (state final))))
+(defrule studies-history-conclusions ""
+  (logical (what-do-you-study History))
+  =>
+  (assert (UI-state (display StarTrekEnterpriseMovie)
+  (state final))))
+(defrule likes-westerns-conclusions ""
+  (logical (likes-westerns Yes))
+  =>
+  (assert (UI-state (display FireflyMovie)
+  (state final))))
+(defrule classic-conclusions ""
+  (logical (classic-or-modern Classic))
+  =>
+  (assert (UI-state (display BattlestarGalacticaOldMovie)
+  (state final))))
+(defrule modern-conclusions ""
+  (logical (classic-or-modern Modern))
+  =>
+  (assert (UI-state (display BattlestarGalacticaNewMovie)
+  (state final))))
+(defrule british-gateways-conclusions ""
+  (logical (british-or-american-gateways UK))
+  =>
+  (assert (UI-state (display DoctorWhoMovie)
+  (state final))))
+(defrule american-gateways-conclusions ""
+  (logical (british-or-american-gateways USA))
+  =>
+  (assert (UI-state (display StargateMovie)
+  (state final))))
+(defrule zombies-conclusions ""
+  (logical (vampires-zombies Zombies))
+  =>
+  (assert (UI-state (display WalkingDeadMovie)
+  (state final))))
+(defrule no-horror-anthologies-conclusions ""
+  (logical (likes-horror-anthologies No))
+  =>
+  (assert (UI-state (display CharmedMovie)
+  (state final))))
+(defrule psycho-horror-conclusions ""
+  (logical (psychological-gory Psycho))
+  =>
+  (assert (UI-state (display TwilightZoneMovie)
+  (state final))))
+(defrule gory-horror-conclusions ""
+  (logical (psychological-gory Gory))
+  =>
+  (assert (UI-state (display TalesFromTheCryptMovie)
+  (state final))))
+(defrule is-less-than-16-old-conclusions ""
+  (logical (is-this-old LessThan16))
+  =>
+  (assert (UI-state (display VampireDiariesMovie)
+  (state final))))
+(defrule didnt-see-buffy-conclusions ""
+  (logical (seen-buffy No))
+  =>
+  (assert (UI-state (display BuffyMovie)
+  (state final))))
+(defrule seen-buffy-conclusions ""
+  (logical (seen-buffy Yes))
+  =>
+  (assert (UI-state (display AngelMovie)
+  (state final))))
+(defrule british-nsfw-horror-conclusions ""
+  (logical (british-or-american-nsfw-horror UK))
+  =>
+  (assert (UI-state (display BeingHumanMovie)
+  (state final))))
+(defrule american-nsfw-horror-conclusions ""
+  (logical (british-or-american-nsfw-horror USA))
+  =>
+  (assert (UI-state (display TrueBloodMovie)
+  (state final))))
 
-   (logical (engine-knocks Yes))
 
-   =>
 
-   (assert (UI-state (display AdjustTimingRepair)
-                     (state final))))
 
-(defrule tank-out-of-gas ""
 
-   (logical (tank-has-gas No))
 
-   =>
 
-   (assert (UI-state (display AddGasRepair)
-                     (state final))))
-   
-(defrule battery-dead ""
 
-   (logical (battery-has-charge No))
-   
-   =>
 
-   (assert (UI-state (display ReplaceBatteryRepair)
-                     (state final))))
-   
-(defrule point-surface-state-burned ""
 
-   (logical (point-surface-state Burned))
 
-   =>
 
-   (assert (UI-state (display ReplacePointsRepair)
-                     (state final))))
-                     
-(defrule point-surface-state-contaminated ""
-   
-   (logical (point-surface-state Contaminated))
-   
-   =>
 
-   (assert (UI-state (display CleanPointsRepair)
-                     (state final))))
 
-(defrule conductivity-test-positive-yes ""
 
-   (logical (conductivity-test-positive Yes))
-   
-   =>
 
-   (assert (UI-state (display LeadWireRepair)
-                     (state final))))
-                     
-(defrule conductivity-test-positive-no ""
 
-   (logical (conductivity-test-positive No))
-      
-   =>
 
-   (assert (UI-state (display CoilRepair)
-                     (state final))))
-                     
-(defrule no-repairs ""
 
-   (declare (salience -10))
-  
-   (logical (UI-state (id ?id)))
-   
-   (state-list (current ?id))
-     
-   =>
-  
-   (assert (UI-state (display MechanicRepair)
-                     (state final))))
-                     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ;;;*************************
 ;;;* GUI INTERACTION RULES *
 ;;;*************************
