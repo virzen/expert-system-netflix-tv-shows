@@ -53,7 +53,136 @@
                      (relation-asserted genre-is)
                      (response SciFi)
                      (valid-answers SciFi Fantasy Horror Slipstream))))
-
+ 
+;;; Fantasy
+(defrule urban-or-period ""
+   (logical (genre-is Fantasy))
+   =>
+   (assert (UI-state (display UrbanOrPeriodQuestion)
+                     (relation-asserted urban-or-period)
+                     (response Urban)
+                     (valid-answers Urban Period))))                    
+ 
+(defrule likes-superheroes ""
+   (logical (urban-or-period Urban))
+   =>
+   (assert (UI-state (display LikeSuperheroesQuestion)
+                     (relation-asserted likes-superheroes)
+                     (response Yes)
+                     (valid-answers Yes No))))      
+                     
+ (defrule likes-mythology ""
+   (logical (likes-superheroes No))
+   =>
+   (assert (UI-state (display MythologyQuestion)
+                     (relation-asserted likes-mythology)
+                     (response Yes)
+                     (valid-answers Yes No))))  
+                     
+ (defrule likes-live-action ""
+   (logical (likes-superheroes Yes))
+   =>
+   (assert (UI-state (display AnimatedOrLiveActionQuestion)
+                     (relation-asserted animated-or-liveaction)
+                     (response Live)
+                     (valid-answers Live Toons)))) 
+                      
+ (defrule myths-or-legends ""
+   (logical (urban-or-period Period))
+   =>
+   (assert (UI-state (display MythsQuestion)
+                     (relation-asserted myths-or-legends)
+                     (response Myths)
+                     (valid-answers Myths Legends))))               
+                     
+(defrule girls-or-boys ""
+   (logical (myths-or-legends Myths))
+   =>
+   (assert (UI-state (display DudesOrGirlsQuestion)
+                     (relation-asserted girls-or-dudes)
+                     (response Dudes)
+                     (valid-answers Dudes Ladies))))   
+                     
+ (defrule animated-or-liveaction ""
+   (logical (myths-or-legends Legends))
+   =>
+   (assert (UI-state (display AnimatedOrLiveActionQuestion)
+                     (relation-asserted animated-or-liveaction)
+                     (response Live)
+                     (valid-answers Live Toons))))       
+                     
+  (defrule likes-nudity ""
+   (logical (animated-or-liveaction Live))
+   =>
+   (assert (UI-state (display LikeNudityQuestion)
+                     (relation-asserted likes-nudity)
+                     (response Yes)
+                     (valid-answers Yes No))))    
+                        
+ (defrule owns-gaemboy ""
+   (logical (animated-or-liveaction Toons))
+   =>
+   (assert (UI-state (display GameboyQuestion)
+                     (relation-asserted owns-gameboy)
+                     (response Yes)
+                     (valid-answers Yes No))))                                                                                                                       
+;;; Slipstream
+(defrule likes-slipstream-action ""
+   (logical (genre-is Slipstream))
+   =>
+   (assert (UI-state (display ActionDramaQuestion)
+                     (relation-asserted likes-slipstream-action)
+                     (response Action)
+                     (valid-answers Action Drama))))
+                     
+(defrule does-like-slipstream-action ""
+   (logical (likes-slipstream-action Action))
+   =>
+   (assert (UI-state (display BiopunkSteampunkQuestion)
+                     (relation-asserted biopunk-or-steampunk)
+                     (response Biopunk)
+                     (valid-answers Biopunk Steampunk))))
+                     
+(defrule doesnt-like-slipstream-action ""
+   (logical (likes-slipstream-action Drama))
+   =>
+   (assert (UI-state (display SeenXFilesQuestion)
+                     (relation-asserted have-you-seen-x-files)
+                     (response Yes)
+                     (valid-answers Yes No HatedIt))))
+                     
+(defrule does-like-slipstream-action ""
+   (logical (likes-slipstream-action Action))
+   =>
+   (assert (UI-state (display BiopunkSteampunkQuestion)
+                     (relation-asserted biopunk-or-steampunk)
+                     (response Biopunk)
+                     (valid-answers Biopunk Steampunk))))
+                   
+(defrule does-like-biopunk ""
+   (logical (biopunk-or-steampunk Biopunk))
+   =>
+   (assert (UI-state (display WhedonCameronQuestion)
+                     (relation-asserted whedon-or-cameron)
+                     (response Whedon)
+                     (valid-answers Whedon Cameron))))
+               
+(defrule hates-x-files ""
+   (logical (have-you-seen-x-files HatedIt))
+   =>
+   (assert (UI-state (display OkWithBeingLetDownQuestion)
+                     (relation-asserted ok-with-let-down)
+                     (response Yes)
+                     (valid-answers Yes No))))
+                     
+  (defrule not-okay-with-let-down ""
+   (logical (have-you-seen-x-files HatedIt))
+   =>
+   (assert (UI-state (display FeelingAboutScottBakula)
+                     (relation-asserted likes-scott-bakula)
+                     (response Who)
+                     (valid-answers Who ImAFan))))                   
+                                           
 ;;; SciFi
 (defrule likes-sci-fi-anthologies ""
    (logical (genre-is SciFi))
@@ -358,6 +487,109 @@
   (logical (british-or-american-nsfw-horror USA))
   =>
   (assert (UI-state (display TrueBloodMovie)
+  (state final))))
+  
+;;; slipstream
+(defrule sanctuary-movie-conclusions ""
+  (logical (biopunk-or-steampunk Steampunk))
+  =>
+  (assert (UI-state (display SanctuaryMovie)
+  (state final))))
+(defrule dark-angel-movie-conclusions ""
+  (logical (whedon-or-cameron Cameron))
+  =>
+  (assert (UI-state (display DarkAngielMovie)
+  (state final))))
+(defrule doll-house-movie-conclusions ""
+  (logical (whedon-or-cameron Whedon))
+  =>
+  (assert (UI-state (display DollhouseMovie)
+  (state final))))
+(defrule fringe-movie-conclusions ""
+  (logical (have-you-seen-x-files Yes))
+  =>
+  (assert (UI-state (display FringeMovie)
+  (state final))))
+(defrule x-files-movie-conclusions ""
+  (logical (have-you-seen-x-files No))
+  =>
+  (assert (UI-state (display XFilesMovie)
+  (state final))))
+(defrule warehouse-movie-conclusions ""
+  (logical (likes-scott-bakula Who))
+  =>
+  (assert (UI-state (display Warehouse13Movie)
+  (state final))))
+(defrule quantum-leap-movie-conclusions ""
+  (logical (likes-scott-bakula ImAFan))
+  =>
+  (assert (UI-state (display QuantumLeapMovie)
+  (state final))))
+(defrule lost-movie-conclusions ""
+  (logical (ok-with-let-down Yes))
+  =>
+  (assert (UI-state (display LostMovie)
+  (state final))))
+
+;;; fantasy
+(defrule the-tick-conclusions ""
+  (logical (animated-or-liveaction Toons))
+  =>
+  (assert (UI-state (display TheTickMovie)
+  (state final))))
+  
+(defrule smallville-conclusions ""
+  (logical (animated-or-liveaction Live))
+  =>
+  (assert (UI-state (display SmallvilleMovie)
+  (state final))))
+  
+(defrule headhunter-conclusions ""
+  (logical (likes-mythology Yes))
+  =>
+  (assert (UI-state (display HeadhunterMovie)
+  (state final))))
+
+(defrule dresden-conclusions ""
+  (logical (likes-mythology No))
+  =>
+  (assert (UI-state (display DresdenMovie)
+  (state final))))
+
+(defrule pokemon-conclusions ""
+  (logical (owns-gameboy Yes))
+  =>
+  (assert (UI-state (display PokemonMovie)
+  (state final))))
+
+(defrule avatar-conclusions ""
+  (logical (owns-gameboy No))
+  =>
+  (assert (UI-state (display AvatarMovie)
+  (state final))))
+
+(defrule legends-conclusions ""
+  (logical (likes-nudity No))
+  =>
+  (assert (UI-state (display LegendOfSeekerMovie)
+  (state final))))
+  
+(defrule spartacus-conclusions ""
+  (logical (likes-nudity Yes))
+  =>
+  (assert (UI-state (display SpartacusMovie)
+  (state final))))
+
+(defrule hercules-conclusions ""
+  (logical (girls-or-dudes Dudes))
+  =>
+  (assert (UI-state (display HerculesMovie)
+  (state final))))
+  
+(defrule xena-conclusions ""
+  (logical (girls-or-dudes Ladies))
+  =>
+  (assert (UI-state (display XenaMovie)
   (state final))))
 
 
